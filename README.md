@@ -8,3 +8,9 @@
 <!-- 561-group-standards:badges:end -->
 
 Generates a provider's MAPE-K actuation-office record and its seven duty records from bare-cedar-fog-codex-actuation-office's shape, generalized across providers rather than hand-copied per provider.
+
+The native tests compare the generated office and duty records with the
+selected Codex source. In the consolidated tree they read the sibling Codex
+section's `lib/agency/`. Set `MAPE_K_CODEX_SOURCE_ROOT` to qualify an
+explicit Codex source checkout. The earlier monorepo layout is also accepted.
+Run `npm run verify` with that source available.

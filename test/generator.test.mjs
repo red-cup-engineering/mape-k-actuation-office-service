@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { allDutySkills, renderActuationOffice, renderDuties } from "../src/generator.mjs";
 
 // The skills that ACTUALLY seat for Codex are the skill directories under its
@@ -9,7 +10,7 @@ import { allDutySkills, renderActuationOffice, renderDuties } from "../src/gener
 // skill (monitor-evidence-replay) no provider has written yet, and passing
 // allDutySkills() as existingSkills asserts a seating that does not exist.
 function seatedCodexSkills(root) {
-  return new Set(readdirSync(join(root, CODEX_ROOT, "agents/skills"), { withFileTypes: true })
+  return new Set(readdirSync(join(root, "skills"), { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name));
 }
@@ -18,11 +19,20 @@ const CODEX_ROOT =
   "lib/emsenn/services/561-group/services/rsc-quiescent/services/persistent-machines-services-section/services/bare-cedar-fog-services-section/services/bare-cedar-fog-codex-enterprise";
 
 function repoRoot() {
+  const source = process.env.MAPE_K_CODEX_SOURCE_ROOT
+    ?? fileURLToPath(new URL("../../codex-agent-harness-computer-system-engineering-services-section/", import.meta.url));
+  const current = join(resolve(source), "lib/agency");
+  try {
+    readFileSync(join(current, "offices/bare-cedar-fog-codex-actuation-office.json"));
+    return current;
+  } catch (error) {
+    if (process.env.MAPE_K_CODEX_SOURCE_ROOT) throw error;
+  }
   let dir = process.cwd();
   for (;;) {
     try {
       readFileSync(join(dir, CODEX_ROOT, "agents/offices/bare-cedar-fog-codex-actuation-office.json"));
-      return dir;
+      return join(dir, CODEX_ROOT, "agents");
     } catch {
       const parent = join(dir, "..");
       if (parent === dir) throw new Error("cannot locate repository root");
@@ -33,7 +43,7 @@ function repoRoot() {
 
 test("renderActuationOffice reproduces the seated Codex office's duty shape exactly", () => {
   const root = repoRoot();
-  const seated = JSON.parse(readFileSync(join(root, CODEX_ROOT, "agents/offices/bare-cedar-fog-codex-actuation-office.json"), "utf8"));
+  const seated = JSON.parse(readFileSync(join(root, "offices/bare-cedar-fog-codex-actuation-office.json"), "utf8"));
   const allCodexSkills = seatedCodexSkills(root);
   const generated = renderActuationOffice({
     providerLabel: "Codex",
@@ -59,7 +69,7 @@ test("renderDuties reproduces every seated Codex duty record exactly", () => {
   const root = repoRoot();
   const duties = renderDuties({ nodeId: "codex", existingSkills: seatedCodexSkills(root) });
   for (const duty of duties) {
-    const seated = JSON.parse(readFileSync(join(root, CODEX_ROOT, "agents/duties", `${duty.id}.json`), "utf8"));
+    const seated = JSON.parse(readFileSync(join(root, "duties", `${duty.id}.json`), "utf8"));
     assert.deepEqual(duty, seated, `duty ${duty.id} must match the seated Codex record exactly`);
   }
 });
