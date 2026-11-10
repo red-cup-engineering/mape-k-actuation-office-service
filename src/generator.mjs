@@ -130,7 +130,7 @@ export function renderActuationOffice({
     "x-provenance": {
       "recorded-by": recordedBy,
       "recorded-on": recordedOn,
-      "derived-from": "generalized from bare-cedar-fog-codex-actuation-office via agent-harness-services-section/services/mape-k-actuation-office-service",
+      "derived-from": "generalized from bare-cedar-fog-codex-actuation-office via agent-harness-computer-systems-engineering-services-section/services/mape-k-actuation-office-service",
     },
     duties,
   };
