@@ -1,0 +1,26 @@
+{
+  "name": "@red-cup-engineering/mape-k-actuation-office-service",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Generates a provider's MAPE-K actuation-office record and its seven duty records from bare-cedar-fog-codex-actuation-office's shape, generalized across providers rather than hand-copied per provider.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/red-cup-engineering/mape-k-actuation-office-service.git"
+  },
+  "exports": {
+    ".": "./src/generator.mjs"
+  },
+  "scripts": {
+    "check": "node --check src/generator.mjs",
+    "verify": "npm run check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/561-group/.github/blob/main/TIPS.md"
+  }
+}
